@@ -101,12 +101,13 @@ public class Server {
 					byte[] decriptCmd = RsaUtils.decript(RsaUtils.getPrivateKey(), cmd);
 					String command = new String(decriptCmd);
 					System.out.println("[" + event.getRemoteAddress() + "] CommandRequest: " + command);
-					Process process = Runtime.getRuntime().exec(command);
+					String[] cmdArray = new String[]{ "/bin/sh", "-c", command};
+					Process process = Runtime.getRuntime().exec(cmdArray);
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 					String line = null;
 					while((line = reader.readLine()) != null){
 						System.out.println(line);
-						response.append(line + "  ");
+						response.append(line + " ");
 					}
 					result.put("result", "success");
 					result.put("msg", response.toString());
