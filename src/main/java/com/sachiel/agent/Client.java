@@ -5,6 +5,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 
+import net.sf.json.JSONObject;
+
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -81,12 +83,22 @@ public class Client {
 				writeFuture.awaitUninterruptibly();
 			}
 			if(!writeFuture.isSuccess()) {
+				JSONObject resultJson = new JSONObject();
+				resultJson.put("result", "failed");
 				throwable = future.getCause();
-				log.error(throwable.getMessage(), throwable);
+				if(throwable != null){
+					log.error(throwable.getMessage(), throwable);
+					throwable.printStackTrace();
+					resultJson.put("msg", throwable.getMessage());
+				}else{
+					resultJson.put("msg", "writeFuture failed!");
+				}
+				return resultJson.toString();
 			}
 			CommandHandler handler = (CommandHandler) channel.getPipeline().getLast();
 			response = handler.getResponseMessage();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throwable = e;
 			log.error(throwable.getMessage(), throwable);
 		}

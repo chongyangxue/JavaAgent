@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class ClientUtils {
 	private final static Logger log = LoggerFactory.getLogger(ClientUtils.class);
 
-	public static JSONObject sendCommand(String cmd, String targetSrc) {
+	public static JSONObject sendCommand(String cmd, String targetSrc, String port) {
 		JSONObject resultJson = new JSONObject();
 		Pattern pattern = Pattern.compile("\\d+[.]\\d+[.]\\d+[.]\\d+");
 		Matcher matcher = pattern.matcher(targetSrc);
@@ -39,8 +39,8 @@ public class ClientUtils {
 
 		Client client = new Client();
 		try {
-			System.out.println("Send msg: " + jsonMsg.toString());
-			String result = client.run(ipAddress, "6698", request);
+			//System.out.println("Send msg: " + jsonMsg.toString());
+			String result = client.run(ipAddress, port, request);
 			resultJson = JSONObject.fromObject(result);
 			
 		} catch (Exception e) {
